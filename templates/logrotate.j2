@@ -1,0 +1,36 @@
+/var/log/nginx/*.log {
+        daily
+        missingok
+        rotate 366
+        compress
+        notifempty
+        create 0640 {{ item.owner|default(nginx_user) }} {{ item.group|default(nginx_user) }}
+
+        sharedscripts
+        prerotate
+                if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
+                        run-parts /etc/logrotate.d/httpd-prerotate; \
+                fi \
+        endscript
+        postrotate
+                invoke-rc.d nginx rotate >/dev/null 2>&1
+        endscript
+}
+
+/var/log/nginx/*/*.log {
+        daily
+        missingok
+        rotate 366
+        compress
+        notifempty
+        create 0644 {{ item.owner|default(nginx_user) }} {{ item.group|default(nginx_user) }}
+        sharedscripts
+        prerotate
+                if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
+                        run-parts /etc/logrotate.d/httpd-prerotate; \
+                fi \
+        endscript
+        postrotate
+                invoke-rc.d nginx rotate >/dev/null 2>&1
+        endscript
+}
