@@ -13,6 +13,26 @@
     mode: 0755
   notify: reload nginx
 
+- name: Create a docroot
+  ansible.builtin.file:
+    path: "{{ item.root }}"
+    state: directory
+    owner: "{{ item.owner|default(nginx_user) }}"
+    group: "{{ item.group|default(nginx_user) }}"
+    mode: '0775'
+  when: item.root is present
+  with_items: "{{ nginx_vhosts }}"
+
+- name: Create a log directory
+  ansible.builtin.file:
+    path: /var/log/nginx/{{ item.server_name }}
+    state: directory
+    owner: "{{ item.owner|default(nginx_user) }}"
+    group: "{{ item.group|default(nginx_user) }}"
+    mode: '0755'
+  with_items: "{{ nginx_vhosts }}"
+  when: item.server_name is present
+
 - name: Add managed vhost config files.
   template:
     src: "{{ item.template|default(nginx_vhost_template) }}"
