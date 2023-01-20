@@ -20,7 +20,7 @@
     owner: "{{ item.owner|default(nginx_user) }}"
     group: "{{ item.group|default(nginx_user) }}"
     mode: '0775'
-  when: item.root is define
+  when: item.root is defined
   with_items: "{{ nginx_vhosts }}"
 
 - name: Create a log directory
@@ -31,7 +31,7 @@
     group: "{{ item.group|default(nginx_user) }}"
     mode: '0755'
   with_items: "{{ nginx_vhosts }}"
-  when: item.server_name is define
+  when: item.server_name is defined
 
 - name: Add managed vhost config files.
   template:
