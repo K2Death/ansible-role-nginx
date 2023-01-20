@@ -25,7 +25,7 @@
 
 - name: Create a log directory
   ansible.builtin.file:
-    path: /var/log/nginx/{{ item.server_name }}
+    path: "/var/log/nginx/{{ item.server_name.split(' ')[0] }}"
     state: directory
     owner: "{{ item.owner|default(nginx_user) }}"
     group: "{{ item.group|default(nginx_user) }}"
